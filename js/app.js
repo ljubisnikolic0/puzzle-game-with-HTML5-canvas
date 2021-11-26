@@ -1,3 +1,4 @@
+window.onload = function() {
 /**
  * EvEmitter v1.0.2
  * Lil' event emitter
@@ -472,7 +473,8 @@ proto.render = function( ctx, center, gridSize ) {
   var ay = this.a.y * gridSize;
   var bx = this.b.x * gridSize;
   var by = this.b.y * gridSize;
-  ctx.strokeStyle = 'hsla(30, 100%, 40%, 0.6)';
+  // ctx.strokeStyle = 'hsla(30, 100%, 40%, 0.6)';
+  ctx.strokeStyle = 'hsla(282, 80%, 63%, 0.6)'; // DTG: added for purple
   ctx.lineWidth = gridSize * 0.8;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -714,7 +716,7 @@ cub.render = function( ctx, mazeCenter, gridSize, angle, isHovered, img ) { //DT
 
 
 
-  ctx.drawImage(img,-25,-25); // DTG: position at negative half values of image size (offsetting the image height and width to center it)
+  ctx.drawImage(img,-23,-25); // DTG: position at negative half values of image size (offsetting the image height and width to center it)
 
   // circle( 0, 0, gridSize * 0.6 );
   // circle( gridSize * -0.45, gridSize * -0.35, gridSize * 0.3 );
@@ -748,8 +750,8 @@ proto.loadText = function( text ) {
     frontMatter = getFrontMatter( sections[0] );
   }
   // set instruction
-  var instructElem = document.querySelector('.instruction');
-  instructElem.innerHTML = frontMatter.instruction || '';
+  // var instructElem = document.querySelector('.instruction');
+  // instructElem.innerHTML = frontMatter.instruction || '';
 
   var mazeSrc = sections[ sections.length - 1 ];
   var lines = mazeSrc.split('\n');
@@ -1177,7 +1179,7 @@ function renderGoal( ctx, x, y, mazeAngle, radiusA, radiusB ) {
   var dx = Math.cos( theta ) * radius - 20;
   var dy = Math.sin( theta ) * radius;
   
-  ctx.fillStyle = "#ABB7B7"; 
+  ctx.fillStyle = "#6c7a89"; // lynch on flatui 
   ctx.font = '55px FontAwesome';  
   ctx.fillText("\uf1f8", dx, dy);// trash Icon at position x and y
 
@@ -1241,7 +1243,8 @@ proto.renderBurst = function( ctx ) {
     ctx.translate( 0, dy );
     ctx.scale( scale, scale );
     ctx.rotate( spin );
-    renderStar( ctx );
+    // renderStar( ctx );
+    ctx.drawImage(hatLargeImg, 0, 0);
     ctx.restore();
   }
 };
@@ -1273,7 +1276,12 @@ var ctx = canvas.getContext('2d');
 
 // Create Trump image: DTG
 var img = new Image();
-img.src = './img/trump.jpg';
+img.src = './img/trump-cartoon.png';
+
+var hatLargeImg = new Image();
+hatLargeImg.src = './img/trump-hat-l.png';
+var hatSmallImg = new Image();
+hatSmallImg.src = './img/trump-hat-s.png';
 
 // size canvas;
 var canvasSize = Math.min( window.innerWidth, window.innerHeight );
@@ -1299,8 +1307,9 @@ var mazeCenter = {
 
 // ----- instruction ----- //
 
-var instructElem = document.querySelector('.instruction');
-instructElem.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
+// var instructElem = document.querySelector('.instruction');
+// instructElem.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
+var instructionsList = document.querySelector('.instructions-list');
 
 // ----- build level select, levels array ----- //
 
@@ -1327,7 +1336,33 @@ var levels = [];
 
   levelList.appendChild( fragment );
 
+  // Added close button for DTG
+  var closeButtonElement = document.createElement('i');
+  closeButtonElement.className = 'fa fa-times close-button';
+  levelList.appendChild( closeButtonElement );
+
 })();
+
+// ----- DTG: instructions button ----- //
+
+var instructionsButton = document.querySelector('.instructions-button');
+// var nextLevelButton = document.querySelector('.next-level-button');
+
+instructionsButton.addEventListener( 'click', function() {
+  instructionsList.classList.add('is-open');
+});
+
+// nextLevelButton.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
+
+// ----- close menu button ---- //
+var closeButton = document.querySelectorAll('.close-button');
+for (var i = 0; i < closeButton.length; i++) {
+  closeButton[i].addEventListener('click', function() {
+    this.parentElement.classList.remove('is-open');
+  });
+}
+
+
 
 // ----- levels button ----- //
 
@@ -1784,4 +1819,6 @@ nextLevelButton.addEventListener( 'click', function() {
 
 function normalizeAngle( angle ) {
   return ( ( angle % TAU ) + TAU ) % TAU;
+}
+
 }
