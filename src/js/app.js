@@ -1,4 +1,13 @@
-window.onload = function() {
+/**
+ * Cub n pup - puzzle game
+ * David DeSandro
+ * 
+ * Copyright (c) 2016 by David DeSandro (http://codepen.io/desandro/pen/ezNawy)
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 /**
  * EvEmitter v1.0.2
  * Lil' event emitter
@@ -444,7 +453,8 @@ proto.render = function( ctx, center, gridSize ) {
   var ay = this.a.y * gridSize;
   var bx = this.b.x * gridSize;
   var by = this.b.y * gridSize;
-  ctx.strokeStyle = 'hsla(200, 80%, 50%, 0.7)';
+  // ctx.strokeStyle = 'hsla(200, 80%, 50%, 0.7)';
+  ctx.strokeStyle = 'hsla(204, 70%, 53%, 0.7)'; // DTG: lighter blue
   ctx.lineWidth = gridSize * 0.6;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -474,7 +484,8 @@ proto.render = function( ctx, center, gridSize ) {
   var bx = this.b.x * gridSize;
   var by = this.b.y * gridSize;
   // ctx.strokeStyle = 'hsla(30, 100%, 40%, 0.6)';
-  ctx.strokeStyle = 'hsla(282, 80%, 63%, 0.6)'; // DTG: added for purple
+  // ctx.strokeStyle = 'hsla(282, 80%, 63%, 0.6)'; // DTG: added for purple
+  ctx.strokeStyle = 'hsla(210, 29%, 24%, 0.6)'; // DTG: dark blue
   ctx.lineWidth = gridSize * 0.8;
   ctx.lineCap = 'round';
   ctx.beginPath();
@@ -522,7 +533,7 @@ proto.render = function( ctx, center, gridSize, mazeAngle ) {
 
   ctx.translate( ax, ay );
   ctx.rotate( -mazeAngle );
-  var color = 'hsla(150, 100%, 35%, 0.7)'
+  var color = 'hsla(6, 78%, 57%, 0.6)'; //Red
   // line
   ctx.strokeStyle = color;
   ctx.lineWidth = gridSize * 0.4;
@@ -574,7 +585,8 @@ proto.render = function( ctx, center, gridSize, mazeAngle ) {
   ctx.save();
   ctx.translate( ax, ay );
   ctx.rotate( mazeAngle );
-  var color = 'hsla(0, 100%, 50%, 0.6)';
+  // var color = 'hsla(0, 100%, 50%, 0.6)';
+    var color = 'hsla(150, 100%, 35%, 0.7)'; //Green
   ctx.strokeStyle = color;
   ctx.fillStyle = color;
   // axle
@@ -1176,12 +1188,10 @@ function renderGoal( ctx, x, y, mazeAngle, radiusA, radiusB ) {
 
   var theta =  Math.PI/2;
   var radius = radiusB;
-  var dx = Math.cos( theta ) * radius - 20;
-  var dy = Math.sin( theta ) * radius;
-  
-  ctx.fillStyle = "#6c7a89"; // lynch on flatui 
-  ctx.font = '55px FontAwesome';  
-  ctx.fillText("\uf1f8", dx, dy);// trash Icon at position x and y
+  var dx = Math.cos( theta ) * radius - 25;
+  var dy = Math.sin( theta ) * radius - 40;
+
+  ctx.drawImage(dumpImg, dx, dy);
 
   ctx.restore();
 }
@@ -1195,7 +1205,7 @@ function WinAnimation( x, y ) {
 }
 
 // length of animation in milliseconds
-var duration = 1000;
+var duration = 1500;
 
 var proto = WinAnimation.prototype;
 
@@ -1282,11 +1292,13 @@ var hatLargeImg = new Image();
 hatLargeImg.src = './img/trump-hat-l.png';
 var hatSmallImg = new Image();
 hatSmallImg.src = './img/trump-hat-s.png';
+var dumpImg = new Image();
+dumpImg.src = './img/dump.png';
 
 // size canvas;
 var canvasSize = Math.min( window.innerWidth, window.innerHeight );
 var canvasWidth = canvas.width = window.innerWidth * 2;
-var canvasHeight = canvas.height = window.innerHeight * 2 - 200; // DTG: added - 200 to account for top banner of 100px
+var canvasHeight = canvas.height = window.innerHeight * 2 - (2 * canvas.offsetTop); // DTG: added - 2* canvasTop to account for top bar and header
 var maze;
 var PI = Math.PI;
 var TAU = PI * 2;
@@ -1307,9 +1319,10 @@ var mazeCenter = {
 
 // ----- instruction ----- //
 
-// var instructElem = document.querySelector('.instruction');
-// instructElem.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
 var instructionsList = document.querySelector('.instructions-list');
+instructionsList.addEventListener( 'click', function(e) {
+  e.stopPropagation();;
+});
 
 // ----- build level select, levels array ----- //
 
@@ -1335,10 +1348,13 @@ var levels = [];
   }
 
   levelList.appendChild( fragment );
+  levelList.addEventListener( 'click', function(e) {
+    e.stopPropagation();;
+  });
 
   // Added close button for DTG
-  var closeButtonElement = document.createElement('i');
-  closeButtonElement.className = 'fa fa-times close-button';
+  var closeButtonElement = document.createElement('span');
+  closeButtonElement.className = 'close-button';
   levelList.appendChild( closeButtonElement );
 
 })();
@@ -1346,13 +1362,12 @@ var levels = [];
 // ----- DTG: instructions button ----- //
 
 var instructionsButton = document.querySelector('.instructions-button');
-// var nextLevelButton = document.querySelector('.next-level-button');
 
-instructionsButton.addEventListener( 'click', function() {
+instructionsButton.addEventListener( 'click', function(e) {
+  e.stopPropagation();
   instructionsList.classList.add('is-open');
+  levelList.classList.remove('is-open');
 });
-
-// nextLevelButton.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
 
 // ----- close menu button ---- //
 var closeButton = document.querySelectorAll('.close-button');
@@ -1362,6 +1377,16 @@ for (var i = 0; i < closeButton.length; i++) {
   });
 }
 
+// DTG added for off click of menu overlay
+document.addEventListener('click', function() {
+  if( instructionsList.classList.contains('is-open') ) {
+    instructionsList.classList.remove('is-open'); 
+  }
+  else if ( levelList.classList.contains('is-open') ) {
+    levelList.classList.remove('is-open');
+  }
+});
+
 
 
 // ----- levels button ----- //
@@ -1369,11 +1394,13 @@ for (var i = 0; i < closeButton.length; i++) {
 var levelSelectButton = document.querySelector('.level-select-button');
 var nextLevelButton = document.querySelector('.next-level-button');
 
-levelSelectButton.addEventListener( 'click', function() {
+levelSelectButton.addEventListener( 'click', function(e) {
+  e.stopPropagation();
   levelList.classList.add('is-open');
+  instructionsList.classList.remove('is-open');
 });
 
-nextLevelButton.style.top = ( mazeCenter.y + gridSize * 5.5 ) + 'px';
+nextLevelButton.style.top = ( canvas.offsetTop ) + 'px'; // DTG: changed for new position for mobile below top bar
 
 // ----- level list ----- //
 
@@ -1427,6 +1454,20 @@ function loadLevel( id ) {
 
 // ----- init ----- //
 
+// Safari, in Private Browsing Mode, looks like it supports localStorage but all calls to setItem
+// throw QuotaExceededError. We're going to detect this and just silently drop any calls to setItem
+// to avoid the entire page breaking, without having to do a check at each usage of Storage.
+if (typeof localStorage === 'object') {
+    try {
+        localStorage.setItem('localStorage', 1);
+        localStorage.removeItem('localStorage');
+    } catch (e) {
+        Storage.prototype._setItem = Storage.prototype.setItem;
+        Storage.prototype.setItem = function() {};
+        alert('Your web browser does not support storing settings locally. In Safari, the most common cause of this is using "Private Browsing Mode". Some settings may not save or some features may not work properly for you.');
+    }
+}
+
 var initialLevel = localStorage.getItem('currentLevel') || levels[0];
 loadLevel( initialLevel );
 
@@ -1434,10 +1475,11 @@ unipointer.bindStartEvent( canvas );
 window.addEventListener( 'mousemove', onHoverMousemove );
 animate();
 
+
 // -------------------------- drag rotation -------------------------- //
 
 var canvasLeft = canvas.offsetLeft;
-var canvasTop = canvas.offsetTop + 100; //DTG: added 100px offset from top for header
+var canvasTop = canvas.offsetTop;
 
 var pointerBehavior;
 
@@ -1819,6 +1861,4 @@ nextLevelButton.addEventListener( 'click', function() {
 
 function normalizeAngle( angle ) {
   return ( ( angle % TAU ) + TAU ) % TAU;
-}
-
 }

@@ -1,0 +1,277 @@
+@import url(https://fonts.googleapis.com/css?family=Fredoka+One|Lato);
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Lato', sans-serif;
+  font-weight: 500;
+  font-size: 20px;
+  color: #555;
+  background-color: #ecf0f1;
+}
+
+@media only screen and (max-width : 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+@media only screen and (max-width : 480px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width : 320px) {
+  body {
+    font-size: 12px;
+  }
+}
+
+header {
+  color: #2c3e50;
+  font-size: 1.8em;
+  font-family: 'Fredoka One';
+  padding: 10px;
+  text-align: center;
+}
+
+header span {
+  color: #e74c3c;
+}
+
+
+/* ---- menu button bar ---- */
+
+.top-bar {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-justify-content: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.top-bar .button {
+  z-index: 2;
+}
+
+/*.top-bar iframe {
+  display: inline-block;
+  margin: 10px 20px;
+  transform: scale(1.5);
+  transform-origin: top left;
+}*/
+
+.button {
+  font-weight: 500;
+  font-size: 1em;
+  padding: 5px 15px;
+  margin: 10px;
+  background: #3498db;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #2980b9;
+}
+
+
+/* ---- list overlays ---- */
+
+.list-wrapper {
+  position: relative;
+}
+
+.instructions-list, .level-list {
+  position: absolute;
+  background-color: #bdc3c7;
+  width: 100%;
+  left: 0;
+  top: 0;
+  margin: 0;
+  list-style: none;
+  padding: 10px;
+  z-index: 3; /* above canvas, level select button */
+  left: -100%;
+  transition: left 0.2s;
+  text-align: center;
+  font-family: 'Lato';
+}
+
+@media only screen and (max-width : 480px) {
+  .instructions-list, .level-list {
+    display: none;
+  }
+}
+
+.instructions-list.is-open, .level-list.is-open {
+  left: 0;
+  display: block;
+}
+
+.instructions-list li {
+  margin: 0 auto;
+  margin-bottom: 20px;
+  max-width: 480px;
+}
+
+.instructions-list li.disclaimer{
+  border-top: 1px solid #333;
+}
+
+.instructions-list li.disclaimer, .instructions-list li.disclaimer + li {
+  font-size: 0.8em;
+}
+
+.level-list__item {
+  display: inline-block;
+  background: #DDD;
+  margin: 5px;
+  padding: 10px;
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  border-radius: 10px;
+  position: relative;
+}
+
+.level-list__item:hover {
+  color: #3498db;
+  cursor: pointer;
+  background: white;
+}
+
+.level-list__item.is-playing {
+  background: #3498db;
+  color: white;
+}
+
+.level-list__item__number {
+  display: block;
+  font-size: 30px;
+  line-height: 35px;
+}
+
+.level-list__item__blurb {
+  display: none;
+  /*font-size: 16px;*/
+}
+
+.level-list__item__check {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  width: 30px;
+  line-height: 30px;
+  background: #e74c3c;
+  border-radius: 15px;
+  color: white;
+  display: none;
+}
+
+.level-list__item.did-complete .level-list__item__check {
+  display: block;
+}
+
+.close-button {
+  position: absolute;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  overflow: hidden;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+  margin: 10px;
+}
+.close-button::before, .close-button::after {
+  content: '';
+  position: absolute;
+  height: 2px;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  margin-top: -1px;
+  border-radius: 5px;
+  height: 4px;
+  margin-top: -2px;
+  background-color: #555;
+}
+
+.close-button::before {
+  transform: rotate(45deg);
+}
+.close-button::after {
+  transform: rotate(-45deg);
+}
+
+@media only screen and (max-width : 480px) {
+  .close-button {
+    top: -40px;
+  }
+}
+
+
+
+/* ---- canvas ---- */
+
+canvas {
+  cursor: move;
+  display: block;
+  max-width: 100%;
+}
+
+.is-cub-hovered,
+.is-cub-hovered canvas {
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.is-cub-dragging,
+.is-cub-dragging canvas {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+
+/* ---- next level button ---- */
+
+.next-level-button {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translateX(-110px) scale(0.5);
+  transform: translateX(-110px) scale(0.5);
+  opacity: 0;
+  background: #3498db;
+  width: 200px;
+  height: 80px;
+  pointer-events: none;
+  -webkit-transition: -webkit-transform 0.2s, opacity 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.next-level-button:hover {
+  background: #2980b9;
+}
+
+.next-level-button.is-open {
+  display: inline-block;
+  pointer-events: auto;
+  -webkit-transform: translateX(-110px) scale(1);
+  transform: translate(-110px) scale(1);
+  opacity: 1;
+}
+
+
+
+/* ---- level pres ---- */
+
+.levels { display: none; }
